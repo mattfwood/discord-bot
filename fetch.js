@@ -1,5 +1,5 @@
 const fs = require('fs');
-const data = require('./data');
+const data = require('./deepFriedData');
 
 let images = [];
 
@@ -10,4 +10,4 @@ data.data.forEach(item => {
 })
 
 
-fs.writeFileSync('./images.js', `module.exports = ${JSON.stringify(images)}`, 'utf8');
+fs.writeFileSync('./deepFriedMemes.js', `module.exports = ${JSON.stringify(images)}`, 'utf8');
