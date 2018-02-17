@@ -62,19 +62,19 @@ client.on('message', msg => {
     msg.reply(deepFriedMemes[memeIndex]);
   }
 
-  const championGGKey = '13bb47f9260bc05def5d8a2fc50585b5';
-
   if (msg.content.includes('!gg')) {
-    const championName = msg.content.split('gg ')[1];
+    // get champion name from command
+    const championName = msg.content.split('!gg ')[1];
+    // get champion ID from champId index
     const championId = champIds[championName.toLowerCase()];
 
     function getKeyByValue(object, value) {
       return Object.keys(object).find(key => object[key] === value);
     }
 
-    axios.get(`http://api.champion.gg/v2/champions/${championId}/matchups?api_key=${championGGKey}&limit=200`)
+    // get data from Champion.gg API
+    axios.get(`http://api.champion.gg/v2/champions/${championId}/matchups?api_key=${process.env.CHAMPION_GG_TOKEN}&limit=200`)
       .then(response => {
-        console.log(response.data);
         const { data } = response;
 
         // only get matchups with over 500 occurrences
@@ -91,6 +91,7 @@ client.on('message', msg => {
             opponentName = getKeyByValue(champIds, matchup._id.champ1_id.toString());
           }
 
+          // TODO: Add champion icons?
           // http://ddragon.leagueoflegends.com/cdn/6.24.1/img/champion/Aatrox.png 
 
           return { name: opponentName, winrate: matchup.champ2.winrate, count: matchup.count }
@@ -102,15 +103,17 @@ client.on('message', msg => {
           return this.charAt(0).toUpperCase() + this.slice(1);
         }
 
-        // get sorted winrates, limit to 10
+        // sort winrates from lowest to highest
         const sortedWinrates = championAndWinrate.sort(function (a, b) {
           return a.winrate - b.winrate;
         });
-
+        
+        // map winrates to field objects, limit to top 6 matchups
         const fields = sortedWinrates.map(matchup => {
           return { name: matchup.name.capitalize(), value: `Winrate: ${(matchup.winrate * 100).toFixed(2)}% (${matchup.count} games played)` }
         }).slice(0, 5);
 
+        // object for discord embedded message
         const embed = {
           "title": "Champion Counters",
           "color": 551208,
@@ -124,6 +127,8 @@ client.on('message', msg => {
           },
           "fields": fields
         };
+
+        // send message
         msg.channel.send(`Champion Matchups for ${championName}`, { embed });
       })
       .catch(error => {
@@ -133,6 +138,4 @@ client.on('message', msg => {
   }
 });
 
-client.login(auth.token);
-
-// heroku git:remote -a antique-discord-bot
+client.login(process.env.DISCORD_API_TOKEN);
