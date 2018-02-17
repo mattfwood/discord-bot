@@ -1,3 +1,7 @@
+require('dotenv').config()
+var rollbar = require("rollbar");
+rollbar.init(process.env.ROLLBAR_ACCESS_TOKEN);
+
 var auth = require('./auth.json');
 
 const Discord = require('discord.js');
@@ -63,7 +67,6 @@ client.on('message', msg => {
     if (msg.content.includes('gg')) {
         const championName = msg.content.split('gg ')[1];
         const championId = champIds[championName.toLowerCase()];
-        msg.reply(championName + ' ' + championId);
 
         function getKeyByValue(object, value) {
           return Object.keys(object).find(key => object[key] === value);
@@ -108,8 +111,6 @@ client.on('message', msg => {
 									return { name: matchup.name.capitalize(), value: `Winrate: ${(matchup.winrate * 100).toFixed(2)}% (${matchup.count} games played)`}
 								}).slice(0, 5);
 								
-                // const opponent = champIds[];
-								// msg.reply(JSON.stringify(championAndWinrate));
 								const embed = {
 									"title": "Champion Counters",
 									"color": 551208,
