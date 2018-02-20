@@ -59,7 +59,16 @@ client.on('message', msg => {
 
   if (msg.content.includes('!meme')) {
     const memeIndex = Math.floor(Math.random() * Math.floor(memesCount));
-    msg.reply(deepFriedMemes[memeIndex]);
+    // msg.reply(deepFriedMemes[memeIndex]);
+    axios.get('https://www.reddit.com/r/DeepFriedMemes/hot.json?limit=100').then(response => {
+      const postCount = response.data.data.children.length;
+      const memeIndex = Math.floor(Math.random() * Math.floor(postCount));
+      msg.reply(response.data.data.children[memeIndex].data.url);
+      // response.data.children[memesCount];
+    })
+      .catch(error => {
+        console.log(error);
+      })
   }
 
   if (msg.content.includes('!chair')) {
