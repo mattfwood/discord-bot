@@ -62,6 +62,10 @@ client.on('message', msg => {
     msg.reply(deepFriedMemes[memeIndex]);
   }
 
+  if (msg.content.includes('!chair')) {
+    msg.reply('http://store.hermanmiller.com/office/office-chairs/embody-task-chair/4737.html?lang=en_US&');
+  }
+
   if (msg.content.includes('!gg')) {
     // get champion name from command
     const championName = msg.content.split('!gg ')[1];
