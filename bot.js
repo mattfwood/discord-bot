@@ -1,5 +1,6 @@
 require('dotenv').config()
 var rollbar = require("rollbar");
+const Twitter = require('twitter');
 rollbar.init(process.env.ROLLBAR_ACCESS_TOKEN);
 
 var auth = require('./auth.json');
@@ -10,6 +11,7 @@ const images = require('./images');
 const deepFriedMemes = require('./deepFriedMemes')
 const axios = require('axios');
 const champIds = require('./champIds');
+const getRandomTweet = require('./twitter');
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
@@ -20,7 +22,7 @@ const memesCount = deepFriedMemes.length;
 
 client.on('message', msg => {
   const imageIndex = Math.floor(Math.random() * Math.floor(imageCount));
-  if (msg.content.includes('!antique')) {
+  if (msg.content == '!antique') {
     msg.reply(images[imageIndex]);
   }
 
@@ -28,11 +30,11 @@ client.on('message', msg => {
     msg.reply('i love you');
   }
 
-  if (msg.content.includes('good') && msg.content.includes('bot')) {
+  if (msg.content == 'good bot') {
     msg.reply('hey thanks man');
   }
 
-  if (msg.content.includes('bad') && msg.content.includes('bot')) {
+  if (msg.content == 'bad bot') {
     msg.reply('wow ok');
   }
 
@@ -57,7 +59,7 @@ client.on('message', msg => {
     msg.reply("you can't command me");
   }
 
-  if (msg.content.includes('!meme')) {
+  if (msg.content == '!meme') {
     const memeIndex = Math.floor(Math.random() * Math.floor(memesCount));
     // msg.reply(deepFriedMemes[memeIndex]);
     axios.get('https://www.reddit.com/r/DeepFriedMemes/hot.json?limit=100').then(response => {
@@ -71,8 +73,15 @@ client.on('message', msg => {
       })
   }
 
-  if (msg.content.includes('!chair')) {
+  if (msg.content == '!chair') {
     msg.reply('http://store.hermanmiller.com/office/office-chairs/embody-task-chair/4737.html?lang=en_US&');
+  }
+
+  if (msg.content.includes('!twitter')) {
+    const twitterHandle = msg.content.split('!twitter ')[1];
+    getRandomTweet(twitterHandle).then(tweet => {
+      msg.reply(tweet);
+    });
   }
 
   if (msg.content.includes('!gg')) {
