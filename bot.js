@@ -3,8 +3,6 @@ const Rollbar = require("rollbar");
 const Twitter = require('twitter');
 const rollbar = new Rollbar(process.env.ROLLBAR_ACCESS_TOKEN);
 
-rollbar.log("Testing Rollbar");
-
 var auth = require('./auth.json');
 
 const Discord = require('discord.js');
