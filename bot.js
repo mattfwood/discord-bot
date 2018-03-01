@@ -1,11 +1,15 @@
 require('dotenv').config()
-const Rollbar = require("rollbar");
 const Twitter = require('twitter');
-const rollbar = new Rollbar({
-  accessToken: process.env.ROLLBAR_ACCESS_TOKEN,
-  captureUncaught: true,
-  captureUnhandledRejections: true
-});
+// const Rollbar = require("rollbar");
+// const rollbar = new Rollbar({
+//   accessToken: process.env.ROLLBAR_ACCESS_TOKEN,
+//   captureUncaught: true,
+//   captureUnhandledRejections: true
+// });
+
+const Raven = require('raven');
+Raven.config(process.env.SENTRY_DSN).install();
+
 
 var auth = require('./auth.json');
 
@@ -106,56 +110,62 @@ client.on('message', msg => {
         // only get matchups with over 500 occurrences
         const validMatchups = data.filter(matchup => matchup.count > 500);
 
-        const championAndWinrate = validMatchups.map(matchup => {
-          let opponentName = '';
-          // if champion 2 isn't the searched champion
-          if (matchup._id.champ2_id.toString() !== championId) {
-            // opponent is champ 2
-            opponentName = getKeyByValue(champIds, matchup._id.champ2_id.toString());
-          } else {
-            // otherwise they're champ 1
-            opponentName = getKeyByValue(champIds, matchup._id.champ1_id.toString());
+        if (validMatchups > 0) {
+          const championAndWinrate = validMatchups.map(matchup => {
+            let opponentName = '';
+            // if champion 2 isn't the searched champion
+            if (matchup._id.champ2_id.toString() !== championId) {
+              // opponent is champ 2
+              opponentName = getKeyByValue(champIds, matchup._id.champ2_id.toString());
+            } else {
+              // otherwise they're champ 1
+              opponentName = getKeyByValue(champIds, matchup._id.champ1_id.toString());
+            }
+  
+            // TODO: Add champion icons?
+            // http://ddragon.leagueoflegends.com/cdn/6.24.1/img/champion/Aatrox.png 
+  
+            return { name: opponentName, winrate: matchup.champ2.winrate, count: matchup.count }
+          });
+  
+          console.log(championAndWinrate);
+  
+          String.prototype.capitalize = function () {
+            return this.charAt(0).toUpperCase() + this.slice(1);
           }
-
-          // TODO: Add champion icons?
-          // http://ddragon.leagueoflegends.com/cdn/6.24.1/img/champion/Aatrox.png 
-
-          return { name: opponentName, winrate: matchup.champ2.winrate, count: matchup.count }
-        });
-
-        console.log(championAndWinrate);
-
-        String.prototype.capitalize = function () {
-          return this.charAt(0).toUpperCase() + this.slice(1);
+  
+          // sort winrates from lowest to highest
+          const sortedWinrates = championAndWinrate.sort(function (a, b) {
+            return a.winrate - b.winrate;
+          });
+          
+          // map winrates to field objects, limit to top 6 matchups
+          const fields = sortedWinrates.map(matchup => {
+            return { name: matchup.name.capitalize(), value: `Winrate: ${(matchup.winrate * 100).toFixed(2)}% (${matchup.count} games played)` }
+          }).slice(0, 5);
+  
+          // object for discord embedded message
+          const embed = {
+            "title": "Champion Counters",
+            "color": 551208,
+            "thumbnail": {
+              "url": "https://cdn.discordapp.com/embed/avatars/0.png"
+            },
+            "author": {
+              "name": "Champion GG Bot",
+              "url": "https://discordapp.com",
+              "icon_url": "https://cdn.discordapp.com/embed/avatars/0.png"
+            },
+            "fields": fields
+          };
+  
+          // send message
+          msg.channel.send(`Champion Matchups for ${championName}`, { embed });
+        } else {
+          // if no valid matchups, return nothing
+          msg.channel.send(`${championName} isn't a champion you dingus`);
         }
 
-        // sort winrates from lowest to highest
-        const sortedWinrates = championAndWinrate.sort(function (a, b) {
-          return a.winrate - b.winrate;
-        });
-        
-        // map winrates to field objects, limit to top 6 matchups
-        const fields = sortedWinrates.map(matchup => {
-          return { name: matchup.name.capitalize(), value: `Winrate: ${(matchup.winrate * 100).toFixed(2)}% (${matchup.count} games played)` }
-        }).slice(0, 5);
-
-        // object for discord embedded message
-        const embed = {
-          "title": "Champion Counters",
-          "color": 551208,
-          "thumbnail": {
-            "url": "https://cdn.discordapp.com/embed/avatars/0.png"
-          },
-          "author": {
-            "name": "Champion GG Bot",
-            "url": "https://discordapp.com",
-            "icon_url": "https://cdn.discordapp.com/embed/avatars/0.png"
-          },
-          "fields": fields
-        };
-
-        // send message
-        msg.channel.send(`Champion Matchups for ${championName}`, { embed });
       })
       .catch(error => {
         console.log(error);
