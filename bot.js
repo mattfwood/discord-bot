@@ -1,7 +1,11 @@
 require('dotenv').config()
 const Rollbar = require("rollbar");
 const Twitter = require('twitter');
-const rollbar = new Rollbar(process.env.ROLLBAR_ACCESS_TOKEN);
+const rollbar = new Rollbar({
+  accessToken: process.env.ROLLBAR_ACCESS_TOKEN,
+  captureUncaught: true,
+  captureUnhandledRejections: true
+});
 
 var auth = require('./auth.json');
 
