@@ -138,7 +138,7 @@ Raven.context(() => {
                 name: matchup.name.capitalize(),
                 value: `[Winrate: ${(matchup.winrate * 100).toFixed(2)}% (${
                   matchup.count
-                } games played)](http://champion.gg/champion/${matchup.name}`,
+                } games played)](http://champion.gg/champion/${matchup.name})`,
               }))
               .slice(0, 5);
 
