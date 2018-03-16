@@ -105,6 +105,8 @@ Raven.context(() => {
           // only get matchups with over 500 occurrences
           const validMatchups = data.filter(matchup => matchup.count > 500);
 
+          console.log(validMatchups);
+
           if (validMatchups.length > 0) {
             const championAndWinrate = validMatchups.map((matchup) => {
               let opponentName = '';
@@ -123,7 +125,7 @@ Raven.context(() => {
               return { name: opponentName, winrate: matchup.champ2.winrate, count: matchup.count };
             });
 
-            console.log(championAndWinrate);
+            // console.log(championAndWinrate);
 
             String.prototype.capitalize = function () {
               return this.charAt(0).toUpperCase() + this.slice(1);
