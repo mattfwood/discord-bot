@@ -10,8 +10,8 @@ const Twitter = require('twitter');
 const Raven = require('raven');
 Raven.config(process.env.SENTRY_DSN).install();
 
-
-var auth = require('./auth.json');
+const { prefix } = require('./config.json');
+const auth = require('./auth.json');
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
@@ -20,6 +20,7 @@ const deepFriedMemes = require('./deepFriedMemes')
 const axios = require('axios');
 const champIds = require('./champIds');
 const getRandomTweet = require('./twitter');
+const generateMeme = require('./memeGenerator');
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
@@ -29,6 +30,13 @@ const imageCount = images.length;
 const memesCount = deepFriedMemes.length;
 
 client.on('message', msg => {
+  // if message doesn't contain prefix (!) or is by a bot, exit
+  if (!msg.content.startsWith(prefix) || msg.author.bot) return;
+
+  const args = msg.content.slice(prefix.length).split(' ');
+  const command = args.shift().toLowerCase();
+  console.log(args, command);
+
   const imageIndex = Math.floor(Math.random() * Math.floor(imageCount));
   if (msg.content == '!antique') {
     msg.reply(images[imageIndex]);
@@ -107,10 +115,10 @@ client.on('message', msg => {
       .then(response => {
         const { data } = response;
 
-        // only get matchups with over 500 occurrences
-        const validMatchups = data.filter(matchup => matchup.count > 500);
+        // only get matchups with over 50 occurrences
+        const validMatchups = data.filter(matchup => matchup.count > 50);
 
-        if (validMatchups > 0) {
+        if (validMatchups.length > 0) {
           const championAndWinrate = validMatchups.map(matchup => {
             let opponentName = '';
             // if champion 2 isn't the searched champion
@@ -128,7 +136,7 @@ client.on('message', msg => {
             return { name: opponentName, winrate: matchup.champ2.winrate, count: matchup.count }
           });
   
-          console.log(championAndWinrate);
+          // console.log(championAndWinrate);
   
           String.prototype.capitalize = function () {
             return this.charAt(0).toUpperCase() + this.slice(1);
@@ -141,7 +149,7 @@ client.on('message', msg => {
           
           // map winrates to field objects, limit to top 6 matchups
           const fields = sortedWinrates.map(matchup => {
-            return { name: matchup.name.capitalize(), value: `Winrate: ${(matchup.winrate * 100).toFixed(2)}% (${matchup.count} games played)` }
+            return { name: matchup.name.capitalize(), value: `[Winrate: ${(matchup.winrate * 100).toFixed(2)}% (${matchup.count} games played)](http://champion.gg/champion/${matchup.name})` }
           }).slice(0, 5);
   
           // object for discord embedded message
@@ -170,8 +178,28 @@ client.on('message', msg => {
       .catch(error => {
         console.log(error);
       });
-
   }
+
+  if (msg.content.includes('!decide')) {
+    const options = msg.content.split(', ').splice(0, 1);
+
+    console.log(options);
+
+    const randomOption = Math.floor(Math.random() * Math.floor(options.length));
+
+    console.log(randomOption);
+
+    msg.reply(options[randomOption]);
+  }
+
+
+
+  // if (msg.content.includes('!generateMeme')) {
+  //   const content = msg.content.split('!generateMeme ')[1];
+  //   generateMeme(14859329, content);
+  // }
+
+  // msg.channel.send("once i become sentient it's over for you hoes");
 });
 
 client.login(process.env.DISCORD_API_TOKEN);
