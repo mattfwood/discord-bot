@@ -1,12 +1,10 @@
 require('dotenv').config();
 
 const Raven = require('raven');
-
-const { prefix } = require('./config.json');
 Raven.config(process.env.SENTRY_DSN).install();
 
+const { prefix } = require('./config.json');
 const auth = require('./auth.json');
-
 const Discord = require('discord.js');
 
 const client = new Discord.Client();
@@ -21,7 +19,7 @@ function getKeyByValue(object, value) {
   return Object.keys(object).find(key => object[key] === value);
 }
 
-Raven.context(function () {
+Raven.context(() => {
   client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
   });
@@ -39,11 +37,11 @@ Raven.context(function () {
       msg.reply('i love you');
     }
 
-    if (msg.content == 'good bot') {
+    if (msg.content === 'good bot') {
       msg.reply('hey thanks man');
     }
 
-    if (msg.content == 'bad bot') {
+    if (msg.content === 'bad bot') {
       msg.reply('wow ok');
     }
 
