@@ -65,6 +65,10 @@ Raven.context(() => {
     if (msg.content.includes('!commands')) {
       msg.reply("you can't command me");
     }
+    
+    if (msg.content.includes('is louis a good boy')) {
+      msg.reply("louis is the goodest boy");
+    }
 
     if (msg.content === '!meme') {
       axios
