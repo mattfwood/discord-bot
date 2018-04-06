@@ -118,7 +118,7 @@ Raven.context(() => {
     }
 
     if (msg.content === '!reddit') {
-      const subreddit = msg.split('!reddit ')[1];
+      const subreddit = msg.content.split('!reddit ')[1];
       axios
         .get(`https://www.reddit.com/r/${subreddit}/hot.json?limit=100`)
         .then((response) => {
