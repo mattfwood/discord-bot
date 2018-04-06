@@ -100,9 +100,13 @@ Raven.context(() => {
 
     if (msg.content.includes('!twitter')) {
       const twitterHandle = msg.content.split('!twitter ')[1];
-      getRandomTweet(twitterHandle).then((tweet) => {
-        msg.reply(tweet);
-      });
+      getRandomTweet(twitterHandle)
+        .then((tweet) => {
+          msg.reply(tweet);
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
     }
 
     // WHEEL DECIDE
