@@ -65,10 +65,28 @@ Raven.context(() => {
     if (msg.content.includes('!commands')) {
       msg.reply("you can't command me");
     }
+    
+    if (msg.content.includes('is louis a good boy')) {
+      msg.reply("louis is the goodest boy");
+    }
 
     if (msg.content === '!meme') {
       axios
         .get('https://www.reddit.com/r/DeepFriedMemes/hot.json?limit=100')
+        .then((response) => {
+          const postCount = response.data.data.children.length;
+          const memeIndex = Math.floor(Math.random() * Math.floor(postCount));
+          msg.reply(response.data.data.children[memeIndex].data.url);
+          // response.data.children[memesCount];
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+    
+     if (msg.content === '!wholesome') {
+      axios
+        .get('https://www.reddit.com/r/wholesomeMemes/hot.json?limit=100')
         .then((response) => {
           const postCount = response.data.data.children.length;
           const memeIndex = Math.floor(Math.random() * Math.floor(postCount));
