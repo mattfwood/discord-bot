@@ -117,21 +117,18 @@ Raven.context(() => {
         });
     }
 
-    if (msg.content === '!reddit') {
-      const subreddit = msg.content.split('!reddit ')[1];
+    if (msg.content.includes('!reddit')) {
+      const subreddit = msg.content.split('!reddit')[1].trim();
       axios
         .get(`https://www.reddit.com/r/${subreddit}/hot.json?limit=100`)
         .then((response) => {
-          // const postCount = response.data.data.children.length;
-          const posts = response.data.data.children;
-          const memeIndex = Math.floor(Math.random() * Math.floor([posts.length]));
-          console.log(posts);
-          // if ()
+          const postCount = response.data.data.children.length;
+          const memeIndex = Math.floor(Math.random() * Math.floor(postCount));
           msg.reply(response.data.data.children[memeIndex].data.url);
-          // response.data.children[memesCount];
         })
         .catch((error) => {
-          console.log(error);
+          console.error(error);
+          throw new Error(error);
         });
     }
 
