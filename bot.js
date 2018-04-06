@@ -67,7 +67,7 @@ Raven.context(() => {
     }
     
     if (msg.content.includes('is louis a good boy')) {
-      msg.reply("louis is the goodest boy");
+      msg.reply('louis is the goodest boy');
     }
 
     if (msg.content === '!meme') {
