@@ -70,6 +70,10 @@ Raven.context(() => {
       msg.reply('louis is the goodest boy');
     }
 
+    if (msg.content.includes('!faceoftwitch')) {
+      msg.reply('https://i.imgur.com/pj5DIPJ.jpg');
+    }
+
     if (msg.content === '!meme') {
       axios
         .get('https://www.reddit.com/r/DeepFriedMemes/hot.json?limit=100')
