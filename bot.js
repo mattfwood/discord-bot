@@ -105,6 +105,17 @@ Raven.context(() => {
       });
     }
 
+    // WHEEL DECIDE
+    if (msg.content.includes('!decide')) {
+      const options = msg.split('!decide ')[1].split(',');
+      console.log(options);
+
+      const winner = Math.floor(Math.random() * Math.floor(options.length));
+      console.log(winner);
+
+      msg.reply(`${options[winner]} wins!`);
+    }
+
     if (msg.content.includes('!gg')) {
       // get champion name from command
       const championName = msg.content.split('!gg ')[1];
@@ -187,17 +198,6 @@ Raven.context(() => {
         .catch((error) => {
           console.log(error);
         });
-    }
-
-    // WHEEL DECIDE
-    if (msg.content.includes('!decide')) {
-      const options = msg.split('!decide ')[1].split(',');
-      console.log(options);
-
-      const winner = Math.floor(Math.random() * Math.floor(options.length));
-      console.log(winner);
-
-      msg.reply(`${options[winner]} wins!`);
     }
   });
 
