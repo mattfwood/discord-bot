@@ -170,6 +170,15 @@ Raven.context(() => {
           console.log(error);
         });
     }
+
+    // WHEEL DECIDE
+    if (msg.content.includes('!decide')) {
+      const options = msg.split('!decide ')[1].split(',');
+
+      const winner = Math.floor(Math.random() * Math.floor(options.length));
+
+      msg.reply(`${options[winner]} wins!`);
+    }
   });
 
   client.login(process.env.DISCORD_API_TOKEN);
