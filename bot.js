@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const Raven = require('raven');
+
 Raven.config(process.env.SENTRY_DSN).install();
 
 const { prefix } = require('./config.json');
@@ -65,7 +66,7 @@ Raven.context(() => {
     if (msg.content.includes('!commands')) {
       msg.reply("you can't command me");
     }
-    
+
     if (msg.content.includes('is louis a good boy')) {
       msg.reply('louis is the goodest boy');
     }
@@ -87,8 +88,8 @@ Raven.context(() => {
           console.log(error);
         });
     }
-    
-     if (msg.content === '!wholesome') {
+
+    if (msg.content === '!wholesome') {
       axios
         .get('https://www.reddit.com/r/wholesomeMemes/hot.json?limit=100')
         .then((response) => {
@@ -100,14 +101,32 @@ Raven.context(() => {
         .catch((error) => {
           console.log(error);
         });
-       }
-    
-     if (msg.content === '!whoup') {
+    }
+
+    if (msg.content === '!whoup') {
       axios
         .get('https://www.reddit.com/r/whothefuckup/hot.json?limit=100')
         .then((response) => {
           const postCount = response.data.data.children.length;
           const memeIndex = Math.floor(Math.random() * Math.floor(postCount));
+          msg.reply(response.data.data.children[memeIndex].data.url);
+          // response.data.children[memesCount];
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+
+    if (msg.content === '!reddit') {
+      const subreddit = msg.split('!reddit ')[1];
+      axios
+        .get(`https://www.reddit.com/r/${subreddit}/hot.json?limit=100`)
+        .then((response) => {
+          // const postCount = response.data.data.children.length;
+          const posts = response.data.data.children;
+          const memeIndex = Math.floor(Math.random() * Math.floor([posts.length]));
+          console.log(posts);
+          // if ()
           msg.reply(response.data.data.children[memeIndex].data.url);
           // response.data.children[memesCount];
         })
