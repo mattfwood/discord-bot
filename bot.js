@@ -76,7 +76,11 @@ Raven.context(() => {
     }
 
     if (msg.content.includes('!decide')) {
-      msg.reply('Ì͕̣̱̪̹͎ ͔͓̟̞̝͕̰͝W̳̝̤̤̖̬̲I̕L̳̰̙͇L̖ ̗͍̭K̠̝̯I̗̼̦̫̗̯̣͝L̖͓̞̩̻L̘ ͉͕̭̗̞M̝̭̥̹͠A̩̫̝̩͕̬̪T̘̻̣̺̮͓̕T̠̻̱͍');
+      // msg.reply('Ì͕̣̱̪̹͎ ͔͓̟̞̝͕̰͝W̳̝̤̤̖̬̲I̕L̳̰̙͇L̖ ̗͍̭K̠̝̯I̗̼̦̫̗̯̣͝L̖͓̞̩̻L̘ ͉͕̭̗̞M̝̭̥̹͠A̩̫̝̩͕̬̪T̘̻̣̺̮͓̕T̠̻̱͍');
+
+      const options = msg.content.split('!decide ')[1].split(',');
+      const randomOption = Math.floor(Math.random() * Math.floor(options.length));
+      msg.reply(options[randomOption].trim());
     }
 
 
