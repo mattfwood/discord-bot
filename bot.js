@@ -83,7 +83,6 @@ Raven.context(() => {
       msg.reply(options[randomOption].trim());
     }
 
-
     if (msg.content === '!meme') {
       axios
         .get('https://www.reddit.com/r/DeepFriedMemes/hot.json?limit=100')
