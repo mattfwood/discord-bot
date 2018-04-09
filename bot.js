@@ -75,6 +75,11 @@ Raven.context(() => {
       msg.reply('https://i.imgur.com/pj5DIPJ.jpg');
     }
 
+    if (msg.content.includes('!decide')) {
+      msg.reply('Ì͕̣̱̪̹͎ ͔͓̟̞̝͕̰͝W̳̝̤̤̖̬̲I̕L̳̰̙͇L̖ ̗͍̭K̠̝̯I̗̼̦̫̗̯̣͝L̖͓̞̩̻L̘ ͉͕̭̗̞M̝̭̥̹͠A̩̫̝̩͕̬̪T̘̻̣̺̮͓̕T̠̻̱͍');
+    }
+
+
     if (msg.content === '!meme') {
       axios
         .get('https://www.reddit.com/r/DeepFriedMemes/hot.json?limit=100')
