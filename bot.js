@@ -80,22 +80,19 @@ Raven.context(() => {
       const randomOption = Math.floor(Math.random() * Math.floor(options.length));
 
       const embed = {
-        content: 'WHEEL DECIDE',
-        embed: {
-          color: 13952197,
-          thumbnail: {
-            url: 'https://i.imgur.com/uirvcZo.png',
-          },
-          fields: [
-            {
-              name: '🎡',
-              value: `THE WINNER IS ${options[randomOption].trim()}`,
-            },
-          ],
+        color: 13952197,
+        thumbnail: {
+          url: 'https://i.imgur.com/uirvcZo.png',
         },
+        fields: [
+          {
+            name: '🎡',
+            value: `THE WINNER IS ${options[randomOption].trim()}`,
+          },
+        ],
       };
 
-      msg.channel.send('', { embed });
+      msg.channel.send('WHEEL DECIDE', { embed });
     }
 
     if (msg.content === '!meme') {
