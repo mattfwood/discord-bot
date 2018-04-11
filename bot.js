@@ -82,9 +82,10 @@ Raven.context(() => {
       const embed = {
         content: 'WHEEL DECIDE',
         embed: {
-
-          url: 'https://discordapp.com',
           color: 13952197,
+          thumbnail: {
+            url: 'https://i.imgur.com/uirvcZo.png',
+          },
           fields: [
             {
               name: '🎡',
